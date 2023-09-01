@@ -43,6 +43,17 @@ app.get('/talker', async (req, res) => {
    });
 
 
+  app.post('/login', async (req, res) => {
+	let chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+	let charLength = chars.length;
+	let result = '';
+	const length = 16
+	for ( let index = 0; index < length; index += 1) {
+	   result += chars.charAt(Math.floor(Math.random() * charLength));
+	}
+    return res.status(200).json({token: result});
+});
+
 app.listen(PORT, () => {
   console.log('Online');
 });
