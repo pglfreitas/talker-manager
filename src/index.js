@@ -26,32 +26,31 @@ const readFile = async () => {
 };
 
 app.get('/talker', async (req, res) => {
-	  const talker = await readFile();
-	  res.status(200).json(talker);
-	if (!talker) {
-	  res.status(200).send([]);
-	}
+    const talker = await readFile();
+      res.status(200).json(talker);
+    if (!talker) {
+      res.status(200).send([]);
+    }
   });
 
-  app.get('/talker/:id', async (req, res) => {
-	   const talker = await readFile();
-	   const talkerId = talker.find(({ id }) => id === Number(req.params.id));
-	   if (!talkerId) {
-		   return res.status(404).send({message: 'Pessoa palestrante não encontrada'});
-		}
-	    return res.status(200).json(talkerId);
-   });
+app.get('/talker/:id', async (req, res) => {
+    const talker = await readFile();
+    const talkerId = talker.find(({ id }) => id === Number(req.params.id));
+    if (!talkerId) {
+        return res.status(404).send({ message: 'Pessoa palestrante não encontrada' });
+        }
+        return res.status(200).json(talkerId);
+    });
 
-
-  app.post('/login', async (req, res) => {
-	let chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-	let charLength = chars.length;
-	let result = '';
-	const length = 16
-	for ( let index = 0; index < length; index += 1) {
-	   result += chars.charAt(Math.floor(Math.random() * charLength));
-	}
-    return res.status(200).json({token: result});
+app.post('/login', async (req, res) => {
+    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const charLength = chars.length;
+    let result = '';
+    const length = 16;
+    for (let index = 0; index < length; index += 1) {
+       result += chars.charAt(Math.floor(Math.random() * charLength));
+    }
+     return res.status(200).json({ token: result });
 });
 
 app.listen(PORT, () => {
