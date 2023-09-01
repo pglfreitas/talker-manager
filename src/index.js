@@ -3,6 +3,8 @@ const express = require('express');
 const fs = require('fs').promises;
 const path = require('path');
 
+const validateLogin = require('./validations/validateLogin');
+
 const app = express();
 app.use(express.json());
 
@@ -42,7 +44,7 @@ app.get('/talker/:id', async (req, res) => {
         return res.status(200).json(talkerId);
     });
 
-app.post('/login', async (req, res) => {
+app.post('/login', validateLogin, async (req, res) => {
     const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     const charLength = chars.length;
     let result = '';
