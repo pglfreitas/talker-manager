@@ -26,13 +26,21 @@ const readFile = async () => {
 };
 
 app.get('/talker', async (req, res) => {
-	try {
 	  const talker = await readFile();
 	  res.status(200).json(talker);
-	} catch (err) {
+	if (!talker) {
 	  res.status(200).send([]);
 	}
   });
+
+  app.get('/talker/:id', async (req, res) => {
+	   const talker = await readFile();
+	   const talkerId = talker.find(({ id }) => id === Number(req.params.id));
+	   if (!talkerId) {
+		   return res.status(404).send({message: 'Pessoa palestrante não encontrada'});
+		}
+	    return res.status(200).json(talkerId);
+   });
 
 
 app.listen(PORT, () => {
