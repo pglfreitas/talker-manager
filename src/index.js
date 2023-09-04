@@ -122,6 +122,18 @@ await writeFile(talkerParse);
 res.status(200).json(talkerUpdate);
 });
 
+app.delete('/talker/:id', authorizationValidation, async (req, res) => {
+const { id } = req.params;
+const talker = await fs.readFile(talkerPath);
+const talkerParse = JSON.parse(talker);
+const index = talkerParse.filter((person) => person.id !== Number(id));
+if (index === -1) {
+return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
+}
+await writeFile(index);
+res.status(204).end();
+});
+
 app.listen(PORT, () => {
 console.log('Online');
 });
