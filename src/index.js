@@ -4,6 +4,14 @@ const fs = require('fs').promises;
 const path = require('path');
 
 const validateLogin = require('./validations/validateLogin');
+const {
+	authorizationValidation,
+	nameValidation,
+	ageValidation,
+	talkValidation,
+	watchedValidation,
+	rateValidation
+} = require('./validations/validateTalker')
 
 const app = express();
 app.use(express.json());
@@ -26,6 +34,15 @@ const readFile = async () => {
     console.error(erro);
   }
 };
+
+const writeFile = async (data) => {
+	try {
+	  const response = await fs.writeFile(talkerPath, JSON.stringify(data));
+	  return response;
+	} catch (erro) {
+	  console.error(erro);
+	}
+  };
 
 app.get('/talker', async (req, res) => {
     const talker = await readFile();
@@ -54,6 +71,32 @@ app.post('/login', validateLogin, async (req, res) => {
     }
      return res.status(200).json({ token: result });
 });
+
+app.post('/talker',
+authorizationValidation,
+nameValidation,
+ageValidation,
+talkValidation,
+watchedValidation,
+rateValidation
+, async (req, res) => {
+	const {name, age, talk} = req.body
+	const {watchedAt, rate} = talk
+	const talker = await fs.readFile(talkerPath);
+	const talkerParse = JSON.parse(talker)
+	const id = talkerParse.length +1
+	const newTalker = { 
+		id,
+		name,
+		age,
+		talk:{
+		 watchedAt,
+		 rate
+	}}
+	talkerParse.push(newTalker)
+	await writeFile(talkerParse)
+	res.status(201).send(newTalker);
+  });
 
 app.listen(PORT, () => {
   console.log('Online');
