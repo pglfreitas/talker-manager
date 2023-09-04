@@ -3,15 +3,15 @@ const express = require('express');
 const fs = require('fs').promises;
 const path = require('path');
 
-const validateLogin = require('./validations/validateLogin');
+const { emailValidation, passwordValidation } = require('./validations/validateLogin');
 const {
 	authorizationValidation,
 	nameValidation,
 	ageValidation,
 	talkValidation,
 	watchedValidation,
-	rateValidation
-} = require('./validations/validateTalker')
+	rateValidation,
+} = require('./validations/validateTalker');
 
 const app = express();
 app.use(express.json());
@@ -61,7 +61,7 @@ app.get('/talker/:id', async (req, res) => {
         return res.status(200).json(talkerId);
     });
 
-app.post('/login', validateLogin, async (req, res) => {
+app.post('/login', emailValidation, passwordValidation, async (req, res) => {
     const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     const charLength = chars.length;
     let result = '';
@@ -78,23 +78,23 @@ nameValidation,
 ageValidation,
 talkValidation,
 watchedValidation,
-rateValidation
-, async (req, res) => {
-	const {name, age, talk} = req.body
-	const {watchedAt, rate} = talk
+rateValidation,
+ async (req, res) => {
+	const { name, age, talk } = req.body;
+	const { watchedAt, rate } = talk;
 	const talker = await fs.readFile(talkerPath);
-	const talkerParse = JSON.parse(talker)
-	const id = talkerParse.length +1
+	const talkerParse = JSON.parse(talker);
+	const id = talkerParse.length + 1;
 	const newTalker = { 
 		id,
 		name,
 		age,
-		talk:{
+		talk: {
 		 watchedAt,
-		 rate
-	}}
-	talkerParse.push(newTalker)
-	await writeFile(talkerParse)
+		 rate,
+	} };
+	talkerParse.push(newTalker);
+	await writeFile(talkerParse);
 	res.status(201).send(newTalker);
   });
 

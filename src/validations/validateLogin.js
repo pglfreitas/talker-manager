@@ -1,5 +1,5 @@
-module.exports = (req, res, next) => {
-	const { email, password } = req.body;
+	const emailValidation = async (req, res, next) => {
+	const { email } = req.body;
 	
 	const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
@@ -14,6 +14,10 @@ module.exports = (req, res, next) => {
 		{ message: 'O \"email\" deve ter o formato \"email@email.com\"' },
 	  );
 	}
+	next();
+};
+const passwordValidation = async (req, res, next) => {
+	const { password } = req.body;
 
 	if (!password) {
 		return res.status(400).json(
@@ -27,4 +31,6 @@ module.exports = (req, res, next) => {
 		);
 	  }
 	next();
-  };
+};
+
+	module.exports = { emailValidation, passwordValidation };
